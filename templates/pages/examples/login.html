@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load  static %}
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Connexion</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <!-- bootstrap 3.0.2 -->
+        <link  href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+        <!-- font Awesome -->
+        <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+        <!-- Ionicons -->
+        <link href="{% static 'css/ionicons.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'css/login.css' %}" rel="stylesheet" type="text/css" />
+    </head>
+    <body class="login-page" style="background: #031a2b2e">    
+          <section class="vh-100 gradient-custom">
+            <div class="loginBox">
+      
+              <h2 style="text-align: center;margin: 30px;">Connexion</h2>
+              <form  method="POST" action="/accounts/login/">
+                {% csrf_token %}
+                 <div style="margin-top: 10px;">
+                    <label >Email</label>
+                     <input type="text" class="form-control" name="username" id="username" placeholder="Veillez entrer l'Email" style="border-radius: 20px;height: 40px;">
+                 </div>
+                
+                 <div style="margin-top: 10px;">
+                    <label>Mot de passe </label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Veillez entrer le mot de passe"
+                            minlength="3" style="border-radius: 20px;height: 40px;">
+                 </div>
+                
+
+                <input type="submit" class="form-control" name="sign-in" value="Connexion" style="margin-top: 20px;background: lightseagreen;font-size: 17px;color: white;font-weight: 600;height: 40px;border-radius: 25px;box-shadow: 2px 2px 3px #7e6d6d;">
+                <a href="/password_reset/" style="position: absolute;margin-top: 10px;">Mot de passe oublie?</a>
+              </form>
+            </div>
+            </section>
+    </body>
+</html>

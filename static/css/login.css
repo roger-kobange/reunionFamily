@@ -1,0 +1,17 @@
+
+
+body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #081b29;
+}
+.gradient-custom{
+  width: 16%;
+}
+@media (max-width: 767px) {
+  .gradient-custom {
+    width: 80%;
+  }
+}

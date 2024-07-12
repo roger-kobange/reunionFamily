@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<aside class="right-side"> 
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dataModal">
+                    Ajouter un Client
+                </button>
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Liste des Clients</h3>                                    
+                    </div>
+                    <div class="box-body table-responsive">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                  
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>adresse</th>
+                                    <th>quartier</th>
+                                    <th>activite</th>
+                                    <th>telephone</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for client in clients %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                
+                                        <td>{{ client.nom }}</td>
+                                        <td>{{ client.prenom }}</td>
+                                        <td>{{ client.adresse }}</td>
+                                        <td>{{ client.quartier }}</td>
+                                        <td>{{ client.activite }}</td>
+                                        <td>{{ client.telephone }}</td>
+                                        <td>
+                                            <a href="/detail_client/{{client.id}}/" class="btn btn-primary btn-sm" title="Détail">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-success  btn-sm" title="Ajouter carte" data-toggle="modal" data-target="#confirmDeleteModal" data-id="{{ client.id }}">
+                                                <i class="fa fa-credit-card"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-warning btn-sm" title="Modifier" data-toggle="modal" data-target="#dataModal" data-id="{{ client.id }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-danger btn-sm" title="Supprimer" data-toggle="modal" data-target="#confirmDeleteModal" data-id="{{ client.id }}">
+                                                <i class="fa fa-trash-o"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                      
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</aside>
+
+<div class="modal fade" id="dataModal" tabindex="-1" role="dialog" aria-labelledby="dataModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCNIModalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="dataForm" method="post"  action="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="box box-warning">
+                            <div class="box-body">
+                            
+                                    <div class="form-group row">
+                                        {% for field in form %}
+                                            <div class="col-sm-6">
+                                               
+                                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                        {{ field }}
+                                                        {% if field.help_text %}
+                                                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                                                        {% endif %}
+                                                        {% for error in field.errors %}
+                                                            <div class="alert alert-danger" role="alert">
+                                                                {{ error }}
+                                                            </div>
+                                                        {% endfor %}
+                                                  
+                                            </div>
+                                            {% if forloop.counter|divisibleby:2 %}
+                                                </div><div class="form-group row">
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                  
+                        
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalTitle">Confirmer la suppression</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir supprimer cet élément ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+  <!-- page script -->
+  <script type="text/javascript">
+    $(function() {
+        $("#example1").dataTable();
+        $('#example2').dataTable({
+            "bPaginate": true,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bSort": true,
+            "bInfo": true,
+            "bAutoWidth": false
+        });
+    });
+</script>
+
+<script>
+    var dataForm = $('#dataForm');
+    var dataModalTitle = $('#dataModalTitle');
+    var editCNISubmitButton = $('#editCNISubmitButton');
+
+    $(document).ready(function() {
+        $('#dataModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var dataId = button.data('id');
+            console.log('Identifiant de la CNI : ', dataId);
+
+            // Remplacer le titre du modal en fonction de l'action (création ou modification)
+            if (dataId) {
+                dataModalTitle.text("Modifier les informations du client");
+                dataForm.attr('action', `/update_client/${dataId}/`);
+            } else {
+                dataModalTitle.text("Créer un nouveau client");
+                dataForm.attr('action', '/create_client/');
+            }
+
+            if (dataId) {
+                // Si l'ID de la CNI est fourni, remplir le formulaire avec ses données
+                fetch(`/edit_client/${dataId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+
+                        console.log('CNI  : ', data);
+                        for (var key in data) {
+                            if (data.hasOwnProperty(key)) {
+                                // Trouver l'élément du formulaire correspondant au champ et lui attribuer la valeur
+                                $('#dataForm input[name="' + key + '"]').val(data[key]);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la récupération des données de client : ', error);
+                    });
+            } else {
+                // Si aucun ID de CNI n'est fourni, vider le formulaire
+                dataForm.trigger('reset');
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var dataId = button.data('id');
+            $('#confirmDeleteButton').attr('data-id', dataId); // Stocker l'ID dans le bouton de confirmation
+        });
+
+        $('#confirmDeleteButton').click(function() {
+            var dataId = $(this).attr('data-id');
+            // Envoyer la demande de suppression à l'aide de l'identifiant stocké
+            window.location.href = '/delete_client/' + dataId + '/';
+        });
+    });
+</script>
+
+
+
+<!-- AdminLTE App -->
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<aside class="right-side"> 
+    <!-- Main content -->
+    <section class="content p-2 m-2">
+       <div class="row">
+            <div class="col-xs-12">
+
+                <button type="button" class="btn btn-primary align-end" data-toggle="modal" data-target="#exampleModalCenter">
+                    Ajouter Motif
+                </button>
+
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Ajouter un Motif</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form method="POST"  id="emplacementForm"> <!-- Ajout de l'attribut method et de l'ID -->
+                                <div class="modal-body">
+                                    <div class="col-md-12">
+                                        <div class="box box-warning">
+                                            <div class="box-body">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                
+                                                    {{ form.motif }}
+                                                </div>
+
+                                                <div class="form-group">
+                                                
+                                                    {{ form.suggestion }}
+                                                </div>
+                                            
+                                            
+                                            </div><!-- /.box-body -->
+                                        </div><!-- /.box -->
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                    <button type="submit" form="emplacementForm" class="btn btn-primary">Enregistrer</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Liste des Motifs</h3>                                    
+                    </div><!-- /.box-header -->
+                    <div class="box-body table-responsive">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nom</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emplacement in emplacement_list %}
+                        
+
+                                <tr>
+                                    <td>1</td>
+                                    <td>{{emplacement.nom}}</td>
+                                    <td>{{emplacement.description}}</td>
+                                    <td>
+                                    </td>
+                                </tr>
+
+                                {% endfor %}
+                            
+                            </tbody>
+                        
+                        </table>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </div>
+        </div>   
+    </section>
+</aside>
+
+
+{% endblock %}

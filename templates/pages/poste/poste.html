@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+<!-- Ajoutez le formulaire de création d'agence dans la page show_agences.html -->
+<aside class="right-side"> 
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createPosteModal">
+                    Ajouter un poste
+                </button>
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Liste des postes</h3>                                    
+                    </div><!-- /.box-header -->
+                    <div class="box-body table-responsive">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nom</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in postes %}
+                                    <tr>
+                                        <td>1</td>
+                                        <td>{{data.nom}}</td>
+                                    
+                                        <td>
+                                            <a href="#" class="btn btn-primary btn-sm" title="Détail" data-toggle="modal" data-target="#editAgentModal" data-id="{{ data.id }}">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-warning btn-sm" title="Edit" data-toggle="modal" data-target="#editPosteModal" data-id="{{ data.id }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-danger btn-sm" title="Supprimer" data-toggle="modal" data-target="#confirmDeleteModal" data-id="{{ data.id }}">
+                                                <i class="fa fa-trash-o"></i>
+                                            </a>
+                                            
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </div>
+        </div>
+    </section><!-- /.content -->
+</aside><!-- /.right-side -->
+
+<!-- Modal pour créer une agence -->
+<div class="modal fade" id="createPosteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle">Ajouter un poste</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" id="posteForm" action="/create_poste/">
+                {% csrf_token %} <!-- Ajout de l'attribut method et de l'ID -->
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="box box-warning">
+                            <div class="box-body">
+                                <h3> Création de poste </h3>
+                                <div class="container">
+                                    <br>
+                                    <div class="form-group row">
+                                        <label class="col-sm-1 col-form-label">Nom:</label>
+                                        <div class="col-sm-4">
+                                            {{ form.nom }}
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit"  class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editPosteModal" tabindex="-1" role="dialog" aria-labelledby="editAgenceModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAgentModalTitle">Éditer le poste</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editPosteForm" method="post"  action="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <!-- Champs de formulaire pour la mise à jour de l'agence -->
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalTitle">Confirmer la suppression</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir supprimer cet élément ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- page script -->
+<script type="text/javascript">
+    $(function() {
+        $("#example1").dataTable();
+        $('#example2').dataTable({
+            "bPaginate": true,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bSort": true,
+            "bInfo": true,
+            "bAutoWidth": false
+        });
+    });
+</script>
+
+
+
+
+<script>
+    // Attendez que le document soit chargé
+    var editPosteForm = $('#editPosteForm');
+    $(document).ready(function() {
+        // Lorsque le modal est sur le point d'être montré
+        $('#editPosteModal').on('show.bs.modal', function (event) {
+            // Récupérez le bouton qui a déclenché le modal
+            var button = $(event.relatedTarget);
+            // Récupérez l'identifiant de l'agence à partir de l'attribut data-id
+            var posteId = button.data('id');
+            // Afficher l'identifiant de l'agence dans la console
+            console.log('Identifiant de l\'agennt : ', posteId);
+
+            // Mettre à jour l'action du formulaire avec l'ID de l'agence
+            editPosteForm.attr('action', `/update_poste/${posteId}/`);
+
+            // Appeler la vue Django pour récupérer les données de l'agence
+            fetch(`/edit_poste/${posteId}/`)
+                .then(response => response.json()) // Convertir la réponse en JSON
+                .then(data => {
+                    // Afficher toutes les données de l'agence dans la console
+                    console.log('Données de l\'agent : ', data);
+
+                    // Remplir les champs du formulaire avec les données de l'agence
+                    $('#editPosteForm input[name="nom"]').val(data.nom);
+                  
+                    // Ajoutez d'autres champs ici
+
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des données de l\'agent : ', error);
+                });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var posteId = button.data('id');
+            $('#confirmDeleteButton').attr('data-id', posteId); // Stocker l'ID dans le bouton de confirmation
+        });
+
+        $('#confirmDeleteButton').click(function() {
+            var posteId = $(this).attr('data-id');
+            // Envoyer la demande de suppression à l'aide de l'identifiant stocké
+            window.location.href = '/delete_poste/' + posteId + '/';
+        });
+    });
+</script>
+
+
+{% endblock %}
